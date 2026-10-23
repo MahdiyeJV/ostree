@@ -128,22 +128,41 @@ function home(){
       </div>`;}).join('')}
   </div>
 
+  <h2 class="section-title">🌱 Build it yourself</h2>
   <div class="card builder-cta">
     <div>
-      <div class="eyebrow">Build it yourself</div>
-      <h3>🌱 Grow the tree for your own product</h3>
-      <p>A guided workshop for your real work. You'll frame an outcome, set up weekly customer interviews, map opportunities, assess them before choosing solutions, and plan tests for Marty Cagan's four risks. Your progress saves in this browser.</p>
+      <h3>Grow the tree for your own product</h3>
+      <p>A guided workshop for your real work. You'll frame an outcome, set up weekly customer interviews, map opportunities, assess them before choosing solutions, and plan tests for Marty Cagan's four risks.</p>
+      ${hasW?(()=>{const i=Workshop.info();return `<div class="lastsession">🕘 <b>Your last session in this browser:</b> ${i.product?esc(i.product)+' · ':''}cycle ${i.cycle} · step "${esc(i.step)}" · ${i.opps} opportunities${i.savedAt?` · saved ${esc(i.savedAt)}`:''}${i.versions?` · ${i.versions} saved versions`:''}</div>`;})():''}
     </div>
     <div class="actions" style="margin:0">
       ${hasW?`<button class="btn ghost" id="wsNew">Start over</button>`:''}
-      <button class="btn" id="wsOpen">${hasW?'Continue workshop':'Start workshop'} →</button>
+      <button class="btn" id="wsOpen">${hasW?'Continue your last session':'Start workshop'} →</button>
     </div>
+  </div>
+  <div class="card resume" id="resume">
+    <div>
+      <h3>📂 Continue a previous session</h3>
+      <p>${hasW?'Want to open a different tree, or one a teammate sent you?':'Cleared your browser, switched device, or got a tree from a teammate?'} Upload your <b>backup file</b> (<code>.json</code>) to pick up exactly where you left off.</p>
+      <p class="muted" style="font-size:.85rem;margin-top:6px">No backup file? In the workshop, click <b>⬇ Backup</b> at the top to download one. Your tree is stored only in this browser, so the file is how you get it back if browser data is cleared.</p>
+    </div>
+    <label class="dropzone" id="dropzone">
+      <input type="file" accept="application/json,.json" id="resumeFile" hidden>
+      <span class="dz-icon" aria-hidden="true">⬆</span>
+      <b>Upload backup file</b>
+      <small>or drop it here</small>
+    </label>
   </div>`;
   app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>go('game', b.dataset.play));
   document.getElementById('wsOpen').onclick=()=>go('workshop');
   const n=document.getElementById('wsNew'); if(n) n.onclick=()=>{ if(confirmReset()) { Workshop.reset(); go('workshop'); } };
+  const fileIn=document.getElementById('resumeFile'), dz=document.getElementById('dropzone');
+  fileIn.onchange=()=>{ if(fileIn.files[0]) Workshop.loadFile(fileIn.files[0]); };
+  ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault(); dz.classList.add('over');}));
+  ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault(); dz.classList.remove('over');}));
+  dz.addEventListener('drop',e=>{ const f=e.dataTransfer.files[0]; if(f) Workshop.loadFile(f); });
 }
-function confirmReset(){ return window.confirm('Start a new workshop? This clears the tree saved in this browser.'); }
+function confirmReset(){ return window.confirm('Start a new workshop? This clears the tree saved in this browser. If you want to keep it, open the workshop and click ⬇ Backup first.'); }
 
 /* ---------- game ---------- */
 function startGame(id){

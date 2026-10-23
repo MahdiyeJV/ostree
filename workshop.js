@@ -11,7 +11,7 @@ const Workshop = (()=>{
   const uid=()=>Math.random().toString(36).slice(2,9);
   const blank=()=>({step:0, cycle:1, product:'', customer:'', trio:'', business:'', behavior:'', metric:'', outcome:'', checks:{},
     cadence:{day:'Tuesday', time:'10:00', length:'30', recruit:'', who:''},
-    moments:['','',''], opps:[], targetId:null, scores:{}, oa:{}, sols:[], asms:[], tests:{}, log:[], flash:null, savedAt:null});
+    moments:['','',''], opps:[], targetId:null, scores:{}, oa:{}, sols:[], asms:[], tests:{}, log:[], flash:null, savedAt:null, backupAt:null});
   /* bring older saves up to the current data model */
   function normalize(d){
     d=Object.assign(blank(), d||{});
@@ -400,6 +400,18 @@ const Workshop = (()=>{
       <p class="muted" style="font-size:.8rem;margin:8px 0 0">Versions are stored in this browser. Restoring a version saves your current tree as a version first, so nothing is lost.</p>
     </div>`;
   }
+  function hasContent(d){ d=d||W; return !!((d.outcome||'').trim() || (d.opps||[]).some(o=>(o.text||'').trim())); }
+  function needsBackup(){
+    if(!hasContent()) return false;
+    if(!W.backupAt) return true;
+    return (new Date(W.savedAt||0) - new Date(W.backupAt)) > 24*3600*1000;
+  }
+  function downloadBackup(){
+    W.backupAt=new Date().toISOString(); save();
+    const name=`grow-the-tree-${(W.product||'workshop').replace(/[^\w-]+/g,'-').toLowerCase().slice(0,40)}-${W.backupAt.slice(0,10)}.json`;
+    download(name, JSON.stringify(snapshot(),null,2), 'application/json');
+    toast('⬇ Backup downloaded. Upload it from the home page to continue later.');
+  }
   function markSaved(ok){
     const el=document.getElementById('savedState'); if(!el) return;
     el.textContent = ok===false ? '⚠ Couldn\'t autosave' : `✓ Autosaved ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
@@ -441,7 +453,9 @@ const Workshop = (()=>{
         <span class="saved" id="savedState">${W.savedAt?`✓ Autosaved ${new Date(W.savedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`:'Autosaves as you type'}</span>
         <button class="btn small" data-act="saveVersion" title="Save a named snapshot (Ctrl/⌘+S)">💾 Save version</button>
         <button class="btn ghost small" data-act="toggleVersions">🕘 Versions (${versions().length})</button>
+        <button class="btn ghost small" data-act="json" title="Download a backup file you can upload later to continue">⬇ Backup</button>
       </div>
+      ${needsBackup()?`<div class="lint show warn backup-nudge">⚠ <b>${W.backupAt?'Your last backup is out of date.':'Not backed up yet.'}</b> Your tree lives only in this browser. Download a backup file so you can continue later from the home page, even if your browser data is cleared. <button class="linkbtn" data-act="json">Download backup now</button></div>`:''}
       ${showVersions?versionsPanel():''}
       <nav class="stepnav" aria-label="Workshop steps">${STEPS.map((s,i)=>`<button data-step="${i}" class="${i===W.step?'on':''} ${s.done()?'done':''}">${i+1}. ${s.label}</button>`).join('')}</nav>
       ${flash}
@@ -546,7 +560,7 @@ const Workshop = (()=>{
         toast(`💾 Saved "End of cycle ${W.cycle-1}"`); goStep(S.opps); break; }
       case 'ics': downloadICS(); break;
       case 'md': download(`opportunity-solution-tree.md`, toMarkdown(), 'text/markdown'); break;
-      case 'json': download(`ost-backup.json`, JSON.stringify(snapshot(),null,2), 'application/json'); break;
+      case 'json': downloadBackup(); render(true); break;
       case 'print': window.print(); break;
       case 'reset': if(confirmReset()){ reset(); render(); } break;
     }
@@ -570,8 +584,16 @@ const Workshop = (()=>{
   function importJSON(file){
     if(!file) return;
     const r=new FileReader();
-    r.onload=()=>{ try{ const d=JSON.parse(r.result); if(typeof d!=='object'||!Array.isArray(d.opps)) throw 0;
-      saveVersion('Before loading a backup file'); W=normalize(d); save(); toast('Backup loaded'); render(); }catch(e){ alert('That file doesn\'t look like a Grow the Tree backup.'); } };
+    r.onload=()=>{
+      let d=null;
+      try{ d=JSON.parse(r.result); if(d && d.data && Array.isArray(d.data.opps)) d=d.data; }catch(e){ d=null; }
+      if(!d || typeof d!=='object' || !Array.isArray(d.opps)){ alert('That file doesn\'t look like a Grow the Tree backup. Look for the .json file you downloaded with "⬇ Backup".'); return; }
+      if(hasContent()) saveVersion('Before loading a backup file');
+      W=normalize(d); W.backupAt=W.backupAt||new Date().toISOString(); save();
+      VIEW='workshop'; showVersions=false;
+      toast(`📂 Welcome back${W.product?' to "'+W.product+'"':''}. Picking up at step ${W.step+1}: ${STEPS[W.step].label}`);
+      render();
+    };
     r.readAsText(file);
   }
   function downloadICS(){
@@ -633,5 +655,7 @@ const Workshop = (()=>{
   }
 
   function reset(){ W=blank(); save(); showVersions=false; }
-  return { open:()=>render(), hasSaved:()=>{const s=store.get(KEY); return !!(s && (s.product||s.outcome||(s.opps&&s.opps.length)));}, reset };
+  function info(){ return {product:W.product.trim(), cycle:W.cycle, step:STEPS[W.step].label, opps:W.opps.filter(o=>o.text.trim()).length,
+    savedAt:W.savedAt?fmtDate(W.savedAt):'', versions:versions().length}; }
+  return { open:()=>render(), info, loadFile:importJSON, hasSaved:()=>{const s=store.get(KEY); return !!(s && (s.product||s.outcome||(s.opps&&s.opps.length)));}, reset };
 })();
