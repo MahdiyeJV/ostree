@@ -6,7 +6,7 @@ const $ = (h)=>{const t=document.createElement('template');t.innerHTML=h.trim();
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const store = {
   get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
-  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
 };
 let VIEW = 'home';
 let G = null; // game state
@@ -45,9 +45,9 @@ function renderTree(d, emptyMsg){
       const kids=(p.kids||[]);
       return `<li><div class="node opp parent">${p.text}</div>${kids.length?`<ul>${kids.map(k=>{
         const sols=(k.sols||[]);
-        return `<li><div class="node opp${k.target?' target':''}">${k.text}</div>${sols.length?`<ul>${sols.map(s=>{
-          const tests=s.tests||[];
-          return `<li><div class="node sol">${s.text}</div>${tests.length?`<ul>${tests.map(t=>`<li><div class="node test">${t}</div></li>`).join('')}</ul>`:''}</li>`;
+        return `<li><div class="node opp${k.target?' target':''}${k.cls?' '+k.cls:''}">${k.text}</div>${sols.length?`<ul>${sols.map(s=>{
+          const tests=(s.tests||[]).map(t=>typeof t==='string'?{text:t}:t);
+          return `<li><div class="node sol${s.cls?' '+s.cls:''}">${s.text}</div>${tests.length?`<ul>${tests.map(t=>`<li><div class="node test${t.cls?' '+t.cls:''}">${t.text}</div></li>`).join('')}</ul>`:''}</li>`;
         }).join('')}</ul>`:''}</li>`;
       }).join('')}</ul>`:''}</li>`;
     }).join('')}</ul>`;
@@ -61,7 +61,7 @@ function renderTree(d, emptyMsg){
 function treePanel(d, emptyMsg, title='Your tree', cls=''){
   return `<aside class="card treepanel ${cls}" aria-label="Opportunity solution tree">
     <h3>${title}</h3>
-    <div class="legend"><span style="--c:var(--outcome)">Outcome</span><span style="--c:var(--opp)">Opportunity</span><span style="--c:var(--sol)">Solution</span><span style="--c:var(--test)">Assumption test</span></div>
+    <div class="legend"><span style="--c:var(--outcome)">Outcome</span><span style="--c:var(--opp)">Opportunity</span><span style="--c:var(--sol)">Solution</span><span style="--c:var(--test)">Assumption test</span>${cls.includes('ws')?'<span class="lg-failed">Failed</span>':''}</div>
     <div class="treescroll"><div class="treefit">${renderTree(d, emptyMsg)}</div></div>
   </aside>`;
 }
