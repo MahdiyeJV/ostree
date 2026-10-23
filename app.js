@@ -152,6 +152,13 @@ function home(){
       <b>Upload backup file</b>
       <small>or drop it here</small>
     </label>
+  </div>
+  <div class="card oss">
+    <div>
+      <h3>🛠️ Open source: make it your own</h3>
+      <p>The code is free to use and adapt under the MIT license. Fork it on GitHub to add scenarios from your own industry (they're all in <code>content.js</code>), translate it, tailor the workshop to your team's process, or suggest improvements.</p>
+    </div>
+    <div class="actions" style="margin:0"><a class="btn ghost" href="https://github.com/MahdiyeJV/ostree" target="_blank" rel="noopener">View on GitHub ↗</a></div>
   </div>`;
   app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>go('game', b.dataset.play));
   document.getElementById('wsOpen').onclick=()=>go('workshop');

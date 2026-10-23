@@ -256,3 +256,10 @@ footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:28px}
 .dropzone .dz-icon{font-size:1.4rem;color:var(--opp);line-height:1}
 .dropzone small{color:var(--muted)}
 .backup-nudge{margin:-4px 0 14px}
+
+/* ---- open source card ---- */
+.oss{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-top:14px}
+@media (max-width:640px){.oss{grid-template-columns:1fr}}
+.oss h3{font-size:1.2rem;margin-bottom:4px}
+.oss p{margin:0;color:var(--muted)}
+.oss code{font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:5px}
