@@ -1,9 +1,9 @@
 :root{
   --bg:#f3f6fb; --surface:#ffffff; --surface-2:#e9eff8; --ink:#14213d; --muted:#5a6782; --line:#d3dceb;
-  --outcome:#1e3a8a; --outcome-bg:#e3eafb;
-  --opp:#0e7490; --opp-bg:#dff3f7;
-  --sol:#2563eb; --sol-bg:#e3ecfd;
-  --test:#6d4fc2; --test-bg:#ece7fa;
+  --outcome:#15803d; --outcome-bg:#e2f4e8;
+  --opp:#2563eb; --opp-bg:#e3ecfd;
+  --sol:#b45309; --sol-bg:#fdf0dc;
+  --test:#be185d; --test-bg:#fce7f1;
   --good:#15803d; --good-bg:#e1f4e8; --warn:#b45309; --warn-bg:#fdf1dc; --bad:#b91c1c; --bad-bg:#fbe4e4;
   --accent:#1d4ed8; --accent-ink:#fff;
   --shadow:0 1px 2px rgba(20,33,61,.06),0 6px 20px rgba(20,33,61,.08);
@@ -11,14 +11,14 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0f1523; --surface:#161e30; --surface-2:#1e2840; --ink:#e6ecf7; --muted:#9aa8c2; --line:#2b3754;
-    --outcome:#8fb2ff; --outcome-bg:#1c2a4d; --opp:#5fd0e0; --opp-bg:#12333b; --sol:#7aa8ff; --sol-bg:#172a4f; --test:#b9a2ff; --test-bg:#261f45;
+    --outcome:#6fd39a; --outcome-bg:#12301f; --opp:#7aa8ff; --opp-bg:#172a4f; --sol:#f0b45e; --sol-bg:#3a2a14; --test:#f49ac1; --test-bg:#3d1a2c;
     --good:#6fd39a; --good-bg:#12301f; --warn:#f0c060; --warn-bg:#3a2f14; --bad:#f08a80; --bad-bg:#3d1f1b;
     --accent:#7aa8ff; --accent-ink:#0b1220; --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
   }
 }
 :root[data-theme="dark"]{
   --bg:#0f1523; --surface:#161e30; --surface-2:#1e2840; --ink:#e6ecf7; --muted:#9aa8c2; --line:#2b3754;
-    --outcome:#8fb2ff; --outcome-bg:#1c2a4d; --opp:#5fd0e0; --opp-bg:#12333b; --sol:#7aa8ff; --sol-bg:#172a4f; --test:#b9a2ff; --test-bg:#261f45;
+    --outcome:#6fd39a; --outcome-bg:#12301f; --opp:#7aa8ff; --opp-bg:#172a4f; --sol:#f0b45e; --sol-bg:#3a2a14; --test:#f49ac1; --test-bg:#3d1a2c;
     --good:#6fd39a; --good-bg:#12301f; --warn:#f0c060; --warn-bg:#3a2f14; --bad:#f08a80; --bad-bg:#3d1f1b;
     --accent:#7aa8ff; --accent-ink:#0b1220; --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
 }
@@ -200,7 +200,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);
 .riskgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:0 0 16px}
 .riskcard{border-radius:12px;padding:10px 12px;background:var(--test-bg);border:1px solid var(--test);font-size:.85rem}
 .riskcard b{display:block;font-size:.95rem;font-family:Fraunces,Georgia,serif}
-.rank-badge{display:inline-block;min-width:24px;text-align:center;border-radius:999px;background:var(--test);color:#fff;font-weight:700;font-size:.78rem;padding:1px 7px;margin-right:6px}
+.rank-badge{display:inline-block;min-width:24px;text-align:center;border-radius:999px;background:var(--test);color:var(--surface);font-weight:700;font-size:.78rem;padding:1px 7px;margin-right:6px}
 .opener{font-family:Fraunces,Georgia,serif;font-size:1.05rem;background:var(--surface-2);border-radius:12px;padding:12px 14px;margin:0 0 12px}
 .qnum{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--opp-bg);color:var(--opp);font-size:.75rem;font-weight:700;margin-right:6px;border:1px solid var(--opp)}
 ul.tips{margin:0 0 16px;padding-left:20px;font-size:.92rem}
