@@ -65,4 +65,4 @@ There's no build step. You can also just double-click `index.html` to play local
 
 ---
 
-*An independent project made out of curiosity, for learning purposes. It isn't affiliated with or endorsed by Teresa Torres, Product Talk, Marty Cagan or SVPG. Opportunity Solution Trees and Continuous Discovery Habits are by Teresa Torres / Product Talk; the four big risks and the opportunity assessment are by Marty Cagan / SVPG.*
+*An independent project made out of curiosity, for learning purposes. It isn't affiliated with or endorsed by Teresa Torres, Product Talk, Marty Cagan / SVPG. Opportunity Solution Trees and Continuous Discovery Habits are by Teresa Torres / Product Talk; the four big risks and the opportunity assessment are by Marty Cagan / SVPG.*
